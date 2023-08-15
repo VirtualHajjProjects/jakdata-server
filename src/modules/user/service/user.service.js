@@ -21,14 +21,14 @@ const moment = require("moment");
 //   }
 // );
 
-setTimeout(function() {
+setTimeout(function () {
   mongoose.connect(
-    'mongodb+srv://adminjakdata:adminjakdata@jakdatadb.2chyhbr.mongodb.net/jakdata',
+    "mongodb+srv://adminjakdata:adminjakdata@jakdatadb.2chyhbr.mongodb.net/jakdata",
     {
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
     }
-    );
+  );
 }, 60000);
 
 const db = mongoose.connection;
@@ -39,11 +39,11 @@ const region = process.env.region;
 // const secretAccessKey = atob(process.env.secretAccessKey);
 const accessKeyId = process.env.accessKeyId;
 const secretAccessKey = process.env.secretAccessKey;
-const bucketName = process.env.AWS_BUCKET_NAME;
+const bucketName = "cyclic-victorious-clam-outerwear-ap-northeast-1";
 const s3 = new S3({
   region,
   accessKeyId,
-  secretAccessKey
+  secretAccessKey,
 });
 
 class UserService {
@@ -56,7 +56,7 @@ class UserService {
     const resultUserData = await UserRepository.collection
       .find(
         {
-          email: data.email
+          email: data.email,
         },
         { limit: 1 }
       )
@@ -64,7 +64,7 @@ class UserService {
 
     let response = {
       message: "succes",
-      resultUserData
+      resultUserData,
     };
     return response;
   }
@@ -79,31 +79,31 @@ class UserService {
       {
         $match: {
           email: data.email,
-          password: data.password
-        }
+          password: data.password,
+        },
       },
       {
         $lookup: {
           localField: "role_id",
           from: "jakdata_coll_role",
           foreignField: "_id",
-          as: "role"
-        }
+          as: "role",
+        },
       },
       {
         $replaceRoot: {
           newRoot: {
-            $mergeObjects: [{ $arrayElemAt: ["$role", 0] }, "$$ROOT"]
-          }
-        }
+            $mergeObjects: [{ $arrayElemAt: ["$role", 0] }, "$$ROOT"],
+          },
+        },
       },
       {
         $project: {
           role: 0,
           __v: 0,
-          password: 0
-        }
-      }
+          password: 0,
+        },
+      },
     ]);
     console.log(resultUserData);
 
@@ -112,7 +112,7 @@ class UserService {
     } else {
       let response = {
         message: "succes login",
-        resultUserData
+        resultUserData,
       };
       return response;
     }
@@ -128,28 +128,28 @@ class UserService {
             localField: "role_id",
             from: "jakdata_coll_role",
             foreignField: "_id",
-            as: "role"
-          }
+            as: "role",
+          },
         },
         {
           $replaceRoot: {
             newRoot: {
-              $mergeObjects: [{ $arrayElemAt: ["$role", 0] }, "$$ROOT"]
-            }
-          }
+              $mergeObjects: [{ $arrayElemAt: ["$role", 0] }, "$$ROOT"],
+            },
+          },
         },
         {
           $project: {
             role: 0,
             __v: 0,
-            password: 0
-          }
-        }
+            password: 0,
+          },
+        },
       ]);
 
       let response = {
         message: "success",
-        resultUserData
+        resultUserData,
       };
       return response;
     } catch (error) {
@@ -161,7 +161,7 @@ class UserService {
   async findImage(key) {
     const downloadParams = {
       Key: key,
-      Bucket: bucketName
+      Bucket: bucketName,
     };
     console.log("downloadParams Key", downloadParams.Key);
     console.log("downloadParams Bucket", downloadParams.Bucket);

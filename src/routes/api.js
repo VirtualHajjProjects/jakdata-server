@@ -13,7 +13,7 @@ const fs = require("fs");
 const sharp = require("sharp");
 const express = require("express");
 const { S3 } = require("aws-sdk");
-const S3Bucket = process.env.AWS_BUCKET_NAME;
+const S3Bucket = "cyclic-victorious-clam-outerwear-ap-northeast-1";
 // const uri = "/.netlify/functions/api/v1";
 const uri = "/api/v1";
 
