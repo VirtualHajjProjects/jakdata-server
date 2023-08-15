@@ -13,7 +13,7 @@ const fs = require("fs");
 const sharp = require("sharp");
 const express = require("express");
 const { S3 } = require("aws-sdk");
-const bucketName = process.env.AWS_BUCKET_NAME;
+const S3Bucket = process.env.AWS_BUCKET_NAME;
 // const uri = "/.netlify/functions/api/v1";
 const uri = "/api/v1";
 
@@ -49,7 +49,7 @@ module.exports = async (app) => {
         //File Array Ke 0
         //Array0
         const s3UploadParamsArray0 = {
-          Bucket: "jakdata-file",
+          Bucket: S3Bucket,
           Key: files[0].originalname,
           Body: Buffer.from(files[0].buffer),
           ContentType: files[0].mimetype,
@@ -127,7 +127,7 @@ module.exports = async (app) => {
         //File Array Ke 0
         //Array0
         // const s3UploadParamsArray0 = {
-        //   Bucket: "jakdata-file",
+        //   Bucket: S3Bucket,
         //   Key: files[0].originalname,
         //   Body: Buffer.from(files[0].buffer),
         //   ContentType: files[0].mimetype
@@ -204,7 +204,7 @@ module.exports = async (app) => {
       //File Array Ke 0
       //Array0
       const s3UploadParamsArray0 = {
-        Bucket: "jakdata-file",
+        Bucket: S3Bucket,
         Key: files[0].originalname,
         Body: Buffer.from(files[0].buffer),
         ContentType: files[0].mimetype,
@@ -276,7 +276,7 @@ module.exports = async (app) => {
         //File Array Ke 0
         //Array0
         const s3UploadParamsArray0 = {
-          Bucket: "jakdata-file",
+          Bucket: S3Bucket,
           Key: files[0].originalname,
           Body: Buffer.from(files[0].buffer),
           ContentType: files[0].mimetype,
@@ -390,7 +390,7 @@ module.exports = async (app) => {
 
       //upload a new image s3
       const s3ParamsImageArticle = {
-        Bucket: "jakdata-file",
+        Bucket: S3Bucket,
         Key: file_image[0].originalname,
         Body: file_image[0].buffer,
         ContentType: file_image[0].mimetype,
@@ -405,7 +405,7 @@ module.exports = async (app) => {
 
       //Delete S3 File
       const params = {
-        Bucket: "jakdata-file",
+        Bucket: S3Bucket,
         Delete: {
           Objects: [{ Key: deletedNameImage }],
         },
@@ -470,7 +470,7 @@ module.exports = async (app) => {
 
       //upload a new image s3
       const s3ParamsImageArticle = {
-        Bucket: "jakdata-file",
+        Bucket: S3Bucket,
         Key: file_image[0].originalname,
         Body: file_image[0].buffer,
         ContentType: file_image[0].mimetype,
@@ -485,7 +485,7 @@ module.exports = async (app) => {
 
       //Delete S3 File
       const params = {
-        Bucket: "jakdata-file",
+        Bucket: S3Bucket,
         Delete: {
           Objects: [{ Key: deletedNameImage }],
         },
@@ -548,7 +548,7 @@ module.exports = async (app) => {
 
       //upload a new image s3
       const s3ParamsImageArticle = {
-        Bucket: "jakdata-file",
+        Bucket: S3Bucket,
         Key: file_image[0].originalname,
         Body: file_image[0].buffer,
         ContentType: file_image[0].mimetype,
@@ -563,7 +563,7 @@ module.exports = async (app) => {
 
       //Delete S3 File
       const params = {
-        Bucket: "jakdata-file",
+        Bucket: S3Bucket,
         Delete: {
           Objects: [{ Key: deletedNameImage }],
         },
@@ -605,7 +605,7 @@ module.exports = async (app) => {
 
       //Delete S3 File
       const params = {
-        Bucket: "jakdata-file",
+        Bucket: S3Bucket,
         Delete: {
           Objects: [{ Key: name_file_image_user }],
         },
@@ -643,7 +643,7 @@ module.exports = async (app) => {
 
       //Delete S3 File
       const params = {
-        Bucket: "jakdata-file",
+        Bucket: S3Bucket,
         Delete: {
           Objects: [{ Key: name_file_image_news }],
         },
@@ -681,7 +681,7 @@ module.exports = async (app) => {
 
       //Delete S3 File
       const params = {
-        Bucket: "jakdata-file",
+        Bucket: S3Bucket,
         Delete: {
           Objects: [{ Key: name_file_image_article }],
         },
