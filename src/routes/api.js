@@ -14,7 +14,8 @@ const sharp = require("sharp");
 const express = require("express");
 const { S3 } = require("aws-sdk");
 const bucketName = process.env.AWS_BUCKET_NAME;
-const uri = "/.netlify/functions/api/v1";
+// const uri = "/.netlify/functions/api/v1";
+const uri = "/api/v1";
 
 module.exports = async (app) => {
   app.use(cors());
@@ -23,8 +24,10 @@ module.exports = async (app) => {
   });
 
   const region = process.env.region;
-  const accessKeyId = atob(process.env.accessKeyId);
-  const secretAccessKey = atob(process.env.secretAccessKey);
+  // const accessKeyId = atob(process.env.accessKeyId);
+  // const secretAccessKey = atob(process.env.secretAccessKey);
+  const accessKeyId = process.env.accessKeyId;
+  const secretAccessKey = process.env.secretAccessKey;
   const s3 = new S3({
     region,
     accessKeyId,
@@ -193,77 +196,73 @@ module.exports = async (app) => {
   app.post(`${uri}/login`, UserController.login);
 
   //create news
-  app.post(
-    `${uri}/add-news`,
-    upload99.array("files", 12),
-    async (req, res) => {
-      try {
-        // Get the files from the request
-        const files = req.files;
+  app.post(`${uri}/add-news`, upload99.array("files", 12), async (req, res) => {
+    try {
+      // Get the files from the request
+      const files = req.files;
 
-        //File Array Ke 0
-        //Array0
-        const s3UploadParamsArray0 = {
-          Bucket: "jakdata-file",
-          Key: files[0].originalname,
-          Body: Buffer.from(files[0].buffer),
-          ContentType: files[0].mimetype,
-        };
-        const BucketArray0 = s3UploadParamsArray0.Bucket;
-        const KeyArray0 = s3UploadParamsArray0.Key;
-        const BodyArray0 = s3UploadParamsArray0.Body;
-        const ContentTypeArray0 = s3UploadParamsArray0.ContentType;
-        console.log("BucketArray0", BucketArray0);
-        console.log("KeyArray0", KeyArray0);
-        console.log("BodyArray0", BodyArray0);
-        console.log("ContentTypeArray0", ContentTypeArray0);
-        const s3UploadResultArray0 = await s3
-          .upload(s3UploadParamsArray0)
-          .promise();
-        const urlArray0 = s3UploadResultArray0.Location;
-        console.log("urlArray0", urlArray0);
+      //File Array Ke 0
+      //Array0
+      const s3UploadParamsArray0 = {
+        Bucket: "jakdata-file",
+        Key: files[0].originalname,
+        Body: Buffer.from(files[0].buffer),
+        ContentType: files[0].mimetype,
+      };
+      const BucketArray0 = s3UploadParamsArray0.Bucket;
+      const KeyArray0 = s3UploadParamsArray0.Key;
+      const BodyArray0 = s3UploadParamsArray0.Body;
+      const ContentTypeArray0 = s3UploadParamsArray0.ContentType;
+      console.log("BucketArray0", BucketArray0);
+      console.log("KeyArray0", KeyArray0);
+      console.log("BodyArray0", BodyArray0);
+      console.log("ContentTypeArray0", ContentTypeArray0);
+      const s3UploadResultArray0 = await s3
+        .upload(s3UploadParamsArray0)
+        .promise();
+      const urlArray0 = s3UploadResultArray0.Location;
+      console.log("urlArray0", urlArray0);
 
-        console.log("====");
+      console.log("====");
 
-        //JSON
-        const title = req.body.title;
-        console.log("title", title);
-        const categories = req.body.categories;
-        console.log("categories", categories);
-        const created_by = req.body.created_by;
-        console.log("created_by", created_by);
-        const tags = req.body.tags;
-        console.log("tags", tags);
-        const field_content = req.body.field_content;
-        console.log(field_content);
+      //JSON
+      const title = req.body.title;
+      console.log("title", title);
+      const categories = req.body.categories;
+      console.log("categories", categories);
+      const created_by = req.body.created_by;
+      console.log("created_by", created_by);
+      const tags = req.body.tags;
+      console.log("tags", tags);
+      const field_content = req.body.field_content;
+      console.log(field_content);
 
-        console.log("====");
+      console.log("====");
 
-        //SAVE TO DATABASE
-        let objectParam = {
-          title: title,
-          categories: categories,
-          name_file_image_news: KeyArray0,
-          url_image_news: urlArray0,
-          created_at: new Date(),
-          created_by: ObjectID.createFromHexString(created_by),
-          tags: tags,
-          field_content: field_content,
-        };
-        console.log("objectParam", objectParam);
-        console.log("====");
+      //SAVE TO DATABASE
+      let objectParam = {
+        title: title,
+        categories: categories,
+        name_file_image_news: KeyArray0,
+        url_image_news: urlArray0,
+        created_at: new Date(),
+        created_by: ObjectID.createFromHexString(created_by),
+        tags: tags,
+        field_content: field_content,
+      };
+      console.log("objectParam", objectParam);
+      console.log("====");
 
-        const createNews = await NewsRepository.create(objectParam);
-        // return "Succes Create Content";
+      const createNews = await NewsRepository.create(objectParam);
+      // return "Succes Create Content";
 
-        // Return success response
-        res.json({ message: "success create news" });
-      } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Error uploading files" });
-      }
+      // Return success response
+      res.json({ message: "success create news" });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Error uploading files" });
     }
-  );
+  });
 
   //create article
   app.post(

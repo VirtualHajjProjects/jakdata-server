@@ -35,8 +35,10 @@ const db = mongoose.connection;
 const jwt = require("jsonwebtoken");
 const { S3 } = require("aws-sdk");
 const region = process.env.region;
-const accessKeyId = atob(process.env.accessKeyId);
-const secretAccessKey = atob(process.env.secretAccessKey);
+// const accessKeyId = atob(process.env.accessKeyId);
+// const secretAccessKey = atob(process.env.secretAccessKey);
+const accessKeyId = process.env.accessKeyId;
+const secretAccessKey = process.env.secretAccessKey;
 const bucketName = process.env.AWS_BUCKET_NAME;
 const s3 = new S3({
   region,
