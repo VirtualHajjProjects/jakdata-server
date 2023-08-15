@@ -9,8 +9,6 @@ const mySchema = new mongoose.Schema({
   status_user: Boolean,
   password: String,
   role_id: mongoose.Schema.Types.ObjectId,
-  name_file_image_user: String,
-  url_image_user: String,
   created_date_user: Date
 });
 // Define model for MongoDB collection

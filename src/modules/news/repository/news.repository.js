@@ -5,8 +5,9 @@ const ObjectId = require("mongoose");
 const mySchema = new mongoose.Schema({
   title: String,
   categories: String,
-  name_file_image_news: String,
-  url_image_news: String,
+  // name_file_image_news: String,
+  // url_image_news: String,
+  files: String,
   created_at: Date,
   created_by: mongoose.Schema.Types.ObjectId,
   tags: Array,

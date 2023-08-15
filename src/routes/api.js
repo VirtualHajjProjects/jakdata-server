@@ -42,47 +42,13 @@ module.exports = async (app) => {
     upload99.array("files", 12),
     async (req, res) => {
       try {
-        // Get the files from the request
-        const files = req.files;
-
-        //File Array Ke 0
-        //Array0
-        const s3UploadParamsArray0 = {
-          Bucket: S3Bucket,
-          Key: files[0].originalname,
-          Body: Buffer.from(files[0].buffer),
-          ContentType: files[0].mimetype,
-        };
-        const BucketArray0 = s3UploadParamsArray0.Bucket;
-        const KeyArray0 = s3UploadParamsArray0.Key;
-        const BodyArray0 = s3UploadParamsArray0.Body;
-        const ContentTypeArray0 = s3UploadParamsArray0.ContentType;
-        console.log("BucketArray0", BucketArray0);
-        console.log("KeyArray0", KeyArray0);
-        console.log("BodyArray0", BodyArray0);
-        console.log("ContentTypeArray0", ContentTypeArray0);
-        const s3UploadResultArray0 = await s3
-          .upload(s3UploadParamsArray0)
-          .promise();
-        const urlArray0 = s3UploadResultArray0.Location;
-        console.log("urlArray0", urlArray0);
-
-        console.log("====");
-
         //JSON
         const username = req.body.username;
-        console.log("username", username);
         const display_name = req.body.display_name;
-        console.log("display_name", display_name);
         const email = req.body.email;
-        console.log("email", email);
         const password = req.body.password;
-        console.log("password", password);
-        //role id super admin
         const role_id = "64c62b92d6e8dbf721f303de";
         const status_user = "Active";
-
-        console.log("====");
 
         //SAVE TO DATABASE
         let objectParam = {
@@ -90,17 +56,12 @@ module.exports = async (app) => {
           display_name: display_name,
           email: email,
           password: password,
-          name_file_image_user: KeyArray0,
-          url_image_user: urlArray0,
           created_date_user: new Date(),
           role_id: role_id,
           status_user: status_user,
         };
-        console.log("objectParam", objectParam);
-        console.log("====");
 
         const createSuperAdmin = await UserRepository.create(objectParam);
-        // return "Succes Create Content";
 
         // Return success response
         res.json({ message: "success add super admin" });
@@ -120,49 +81,12 @@ module.exports = async (app) => {
     upload99.array("files", 12),
     async (req, res) => {
       try {
-        // Get the files from the request
-        // const files = req.files;
-
-        //File Array Ke 0
-        //Array0
-        // const s3UploadParamsArray0 = {
-        //   Bucket: S3Bucket,
-        //   Key: files[0].originalname,
-        //   Body: Buffer.from(files[0].buffer),
-        //   ContentType: files[0].mimetype
-        // };
-        // const BucketArray0 = s3UploadParamsArray0.Bucket;
-        // const KeyArray0 = s3UploadParamsArray0.Key;
-        // const BodyArray0 = s3UploadParamsArray0.Body;
-        // const ContentTypeArray0 = s3UploadParamsArray0.ContentType;
-        // console.log("BucketArray0", BucketArray0);
-        // console.log("KeyArray0", KeyArray0);
-        // console.log("BodyArray0", BodyArray0);
-        // console.log("ContentTypeArray0", ContentTypeArray0);
-        // const s3UploadResultArray0 = await s3
-        //   .upload(s3UploadParamsArray0)
-        //   .promise();
-        // const urlArray0 = s3UploadResultArray0.Location;
-        // console.log("urlArray0", urlArray0);
-
-        console.log("====");
-
-        //JSON
         const username = req.body.username;
-        console.log("username", username);
         const display_name = req.body.display_name;
-        console.log("display_name", display_name);
         const email = req.body.email;
-        console.log("email", email);
         const password = req.body.password;
-        console.log("password", password);
         const status_user = req.body.status_user;
-        console.log("status_user", status_user);
-        //role id super admin
         const role_id = "64c62b78d6e8dbf721f303dd";
-        // const status_user = "Active";
-
-        console.log("====");
 
         //SAVE TO DATABASE
         let objectParam = {
@@ -170,17 +94,12 @@ module.exports = async (app) => {
           display_name: display_name,
           email: email,
           password: password,
-          // name_file_image_user: KeyArray0,
-          // url_image_user: urlArray0,
           created_date_user: new Date(),
           role_id: role_id,
           status_user: Boolean(status_user),
         };
-        console.log("objectParam", objectParam);
-        console.log("====");
 
         const createSuperAdmin = await UserRepository.create(objectParam);
-        // return "Succes Create Content";
 
         // Return success response
         res.json({ message: "success add super admin" });
@@ -197,63 +116,25 @@ module.exports = async (app) => {
   //create news
   app.post(`${uri}/add-news`, upload99.array("files", 12), async (req, res) => {
     try {
-      // Get the files from the request
-      const files = req.files;
-
-      //File Array Ke 0
-      //Array0
-      const s3UploadParamsArray0 = {
-        Bucket: S3Bucket,
-        Key: files[0].originalname,
-        Body: Buffer.from(files[0].buffer),
-        ContentType: files[0].mimetype,
-      };
-      const BucketArray0 = s3UploadParamsArray0.Bucket;
-      const KeyArray0 = s3UploadParamsArray0.Key;
-      const BodyArray0 = s3UploadParamsArray0.Body;
-      const ContentTypeArray0 = s3UploadParamsArray0.ContentType;
-      console.log("BucketArray0", BucketArray0);
-      console.log("KeyArray0", KeyArray0);
-      console.log("BodyArray0", BodyArray0);
-      console.log("ContentTypeArray0", ContentTypeArray0);
-      const s3UploadResultArray0 = await s3
-        .upload(s3UploadParamsArray0)
-        .promise();
-      const urlArray0 = s3UploadResultArray0.Location;
-      console.log("urlArray0", urlArray0);
-
-      console.log("====");
-
-      //JSON
+      const files = req.body.files;
       const title = req.body.title;
-      console.log("title", title);
       const categories = req.body.categories;
-      console.log("categories", categories);
       const created_by = req.body.created_by;
-      console.log("created_by", created_by);
       const tags = req.body.tags;
-      console.log("tags", tags);
       const field_content = req.body.field_content;
-      console.log(field_content);
-
-      console.log("====");
 
       //SAVE TO DATABASE
       let objectParam = {
+        files: files,
         title: title,
         categories: categories,
-        name_file_image_news: KeyArray0,
-        url_image_news: urlArray0,
         created_at: new Date(),
         created_by: ObjectID.createFromHexString(created_by),
         tags: tags,
         field_content: field_content,
       };
-      console.log("objectParam", objectParam);
-      console.log("====");
 
       const createNews = await NewsRepository.create(objectParam);
-      // return "Succes Create Content";
 
       // Return success response
       res.json({ message: "success create news" });
@@ -269,60 +150,24 @@ module.exports = async (app) => {
     upload99.array("files", 12),
     async (req, res) => {
       try {
-        // Get the files from the request
-        const files = req.files;
-
-        //File Array Ke 0
-        //Array0
-        const s3UploadParamsArray0 = {
-          Bucket: S3Bucket,
-          Key: files[0].originalname,
-          Body: Buffer.from(files[0].buffer),
-          ContentType: files[0].mimetype,
-        };
-        const BucketArray0 = s3UploadParamsArray0.Bucket;
-        const KeyArray0 = s3UploadParamsArray0.Key;
-        const BodyArray0 = s3UploadParamsArray0.Body;
-        const ContentTypeArray0 = s3UploadParamsArray0.ContentType;
-        console.log("BucketArray0", BucketArray0);
-        console.log("KeyArray0", KeyArray0);
-        console.log("BodyArray0", BodyArray0);
-        console.log("ContentTypeArray0", ContentTypeArray0);
-        const s3UploadResultArray0 = await s3
-          .upload(s3UploadParamsArray0)
-          .promise();
-        const urlArray0 = s3UploadResultArray0.Location;
-        console.log("urlArray0", urlArray0);
-
-        console.log("====");
-
         //JSON
+        const files = req.body.files;
         const title = req.body.title;
-        console.log("title", title);
         const categories = req.body.categories;
-        console.log("categories", categories);
         const created_by = req.body.created_by;
-        console.log("created_by", created_by);
         const tags = req.body.tags;
-        console.log("tags", tags);
         const field_content = req.body.field_content;
-        console.log(field_content);
-
-        console.log("====");
 
         //SAVE TO DATABASE
         let objectParam = {
           title: title,
           categories: categories,
-          name_file_image_article: KeyArray0,
-          url_image_article: urlArray0,
+          files: files,
           created_at: new Date(),
           created_by: ObjectID.createFromHexString(created_by),
           tags: tags,
           field_content: field_content,
         };
-        console.log("objectParam", objectParam);
-        console.log("====");
 
         const createArticle = await ArticleRepository.create(objectParam);
         // return "Succes Create Content";
@@ -364,12 +209,6 @@ module.exports = async (app) => {
     upload1001.array("files", 12),
     async (req, res) => {
       const file_image = req.files;
-      console.log("file_image", file_image);
-      console.log("==");
-      // let idUser = req.body.user_id
-      // console.log("idUser", idUser);
-
-      //find data user
       let resultUser;
       try {
         resultUser = await UserRepository.find({
@@ -593,29 +432,6 @@ module.exports = async (app) => {
   //delete user (super admin & admin)
   app.delete(`${uri}/deleteUser/:user_id`, async (req, res) => {
     try {
-      //find a data
-      let findData = await UserRepository.find({
-        _id: ObjectID.createFromHexString(req.params.user_id),
-      });
-      console.log("findData", findData);
-
-      let name_file_image_user = findData[0].name_file_image_user;
-      console.log("name_file_image_user", name_file_image_user);
-
-      //Delete S3 File
-      const params = {
-        Bucket: S3Bucket,
-        Delete: {
-          Objects: [{ Key: name_file_image_user }],
-        },
-      };
-      console.log("params", params);
-
-      s3.deleteObjects(params, function (err, data) {
-        if (err) console.log(err, err.stack);
-        else console.log(data);
-      });
-
       //Delete data mongodb
       let deleteDataUser = await UserRepository.deleteOne({
         _id: ObjectID.createFromHexString(req.params.user_id),
@@ -631,29 +447,6 @@ module.exports = async (app) => {
   //delete news
   app.delete(`${uri}/deleteNews/:news_id`, async (req, res) => {
     try {
-      //find a data
-      let findData = await NewsRepository.find({
-        _id: ObjectID.createFromHexString(req.params.news_id),
-      });
-      console.log("findData", findData);
-
-      let name_file_image_news = findData[0].name_file_image_news;
-      console.log("name_file_image_news", name_file_image_news);
-
-      //Delete S3 File
-      const params = {
-        Bucket: S3Bucket,
-        Delete: {
-          Objects: [{ Key: name_file_image_news }],
-        },
-      };
-      console.log("params", params);
-
-      s3.deleteObjects(params, function (err, data) {
-        if (err) console.log(err, err.stack);
-        else console.log(data);
-      });
-
       //Delete data mongodb
       let deleteDataNews = await NewsRepository.deleteOne({
         _id: ObjectID.createFromHexString(req.params.news_id),
@@ -669,29 +462,6 @@ module.exports = async (app) => {
   //delete article
   app.delete(`${uri}/deleteArticle/:article_id`, async (req, res) => {
     try {
-      //find a data
-      let findData = await ArticleRepository.find({
-        _id: ObjectID.createFromHexString(req.params.article_id),
-      });
-      console.log("findData", findData);
-
-      let name_file_image_article = findData[0].name_file_image_article;
-      console.log("name_file_image_article", name_file_image_article);
-
-      //Delete S3 File
-      const params = {
-        Bucket: S3Bucket,
-        Delete: {
-          Objects: [{ Key: name_file_image_article }],
-        },
-      };
-      console.log("params", params);
-
-      s3.deleteObjects(params, function (err, data) {
-        if (err) console.log(err, err.stack);
-        else console.log(data);
-      });
-
       //Delete data mongodb
       let deleteDataArticle = await ArticleRepository.deleteOne({
         _id: ObjectID.createFromHexString(req.params.article_id),
