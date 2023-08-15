@@ -34,11 +34,12 @@ setTimeout(function () {
 const db = mongoose.connection;
 const jwt = require("jsonwebtoken");
 const { S3 } = require("aws-sdk");
-const region = process.env.region;
+const region = "ap-northeast-1";
 // const accessKeyId = atob(process.env.accessKeyId);
 // const secretAccessKey = atob(process.env.secretAccessKey);
 const accessKeyId = process.env.accessKeyId;
 const secretAccessKey = process.env.secretAccessKey;
+// const bucketName = 'jakdata-file';
 const bucketName = "cyclic-victorious-clam-outerwear-ap-northeast-1";
 const s3 = new S3({
   region,

@@ -14,7 +14,6 @@ const sharp = require("sharp");
 const express = require("express");
 const { S3 } = require("aws-sdk");
 const S3Bucket = "cyclic-victorious-clam-outerwear-ap-northeast-1";
-// const uri = "/.netlify/functions/api/v1";
 const uri = "/api/v1";
 
 module.exports = async (app) => {
@@ -23,7 +22,7 @@ module.exports = async (app) => {
     res.set("Access-Control-Allow-Origin", "*");
   });
 
-  const region = process.env.region;
+  const region = "ap-northeast-1";
   // const accessKeyId = atob(process.env.accessKeyId);
   // const secretAccessKey = atob(process.env.secretAccessKey);
   const accessKeyId = process.env.accessKeyId;

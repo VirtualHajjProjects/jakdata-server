@@ -2,7 +2,7 @@ require(`dotenv`).config();
 const express = require("express");
 const app = express();
 const db = require("./src/helpers/database");
-const port = 3000;
+const port = 4013;
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const serverless = require("serverless-http");
