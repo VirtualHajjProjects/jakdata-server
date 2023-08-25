@@ -6,7 +6,7 @@ const mySchema = new mongoose.Schema({
   username: String,
   display_name: String,
   email: String,
-  status_user: Boolean,
+  status_user: String,
   password: String,
   role_id: mongoose.Schema.Types.ObjectId,
   created_date_user: Date

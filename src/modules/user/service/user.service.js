@@ -33,19 +33,6 @@ setTimeout(function () {
 
 const db = mongoose.connection;
 const jwt = require("jsonwebtoken");
-const { S3 } = require("aws-sdk");
-const region = "ap-northeast-1";
-// const accessKeyId = atob(process.env.accessKeyId);
-// const secretAccessKey = atob(process.env.secretAccessKey);
-const accessKeyId = process.env.accessKeyId;
-const secretAccessKey = process.env.secretAccessKey;
-// const bucketName = 'jakdata-file';
-const bucketName = "cyclic-victorious-clam-outerwear-ap-northeast-1";
-const s3 = new S3({
-  region,
-  accessKeyId,
-  secretAccessKey,
-});
 
 class UserService {
   async detailUser(data) {
@@ -157,17 +144,6 @@ class UserService {
       console.error("Error in getAllUser:", error);
       throw error;
     }
-  }
-
-  async findImage(key) {
-    const downloadParams = {
-      Key: key,
-      Bucket: bucketName,
-    };
-    console.log("downloadParams Key", downloadParams.Key);
-    console.log("downloadParams Bucket", downloadParams.Bucket);
-    console.log("====");
-    return s3.getObject(downloadParams).createReadStream();
   }
 }
 

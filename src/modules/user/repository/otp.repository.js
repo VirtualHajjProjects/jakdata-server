@@ -1,6 +1,5 @@
 const db = require(`../../../helpers/database`);
 const mongoose = require("mongoose");
-const ObjectId = require("mongoose");
 
 const mySchema = new mongoose.Schema({
   code_otp: Number,

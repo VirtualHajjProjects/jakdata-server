@@ -1,10 +1,9 @@
 const UserController = require("../modules/user/controller/user.controller");
 const ArticleController = require("../modules/article/controller/article.controller");
 const NewsController = require("../modules/news/controller/news.controller");
-const ObjectID = require("mongodb").ObjectId;
-const UserRepository = require(`../modules/user/repository/user.repository`);
-const NewsRepository = require(`../modules/news/repository/news.repository`);
-const ArticleRepository = require(`../modules/article/repository/article.repository`);
+const AgendaController = require("../modules/agenda/controller/agenda.controller");
+const JournalController = require("../modules/journal/controller/journal.controller");
+
 const cors = require("cors");
 const auth = require("../middleware/auth");
 const multer = require("multer");
@@ -12,9 +11,11 @@ const path = require("path");
 const fs = require("fs");
 const sharp = require("sharp");
 const express = require("express");
-const { S3 } = require("aws-sdk");
-const S3Bucket = "cyclic-victorious-clam-outerwear-ap-northeast-1";
 const uri = "/api/v1";
+const setMulter = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 1000000000, files: 2 },
+}).array("files", 12);
 
 module.exports = async (app) => {
   app.use(cors());
@@ -22,455 +23,70 @@ module.exports = async (app) => {
     res.set("Access-Control-Allow-Origin", "*");
   });
 
-  const region = "ap-northeast-1";
-  // const accessKeyId = atob(process.env.accessKeyId);
-  // const secretAccessKey = atob(process.env.secretAccessKey);
-  const accessKeyId = process.env.accessKeyId;
-  const secretAccessKey = process.env.secretAccessKey;
-  const s3 = new S3({
-    region,
-    accessKeyId,
-    secretAccessKey,
-  });
-  //register super admin
-  const upload99 = multer({
-    storage: multer.memoryStorage(),
-    limits: { fileSize: 1000000000, files: 2 },
-  });
-  app.post(
-    `${uri}/add-superadmin`,
-    upload99.array("files", 12),
-    async (req, res) => {
-      try {
-        //JSON
-        const username = req.body.username;
-        const display_name = req.body.display_name;
-        const email = req.body.email;
-        const password = req.body.password;
-        const role_id = "64c62b92d6e8dbf721f303de";
-        const status_user = "Active";
-
-        //SAVE TO DATABASE
-        let objectParam = {
-          username: username,
-          display_name: display_name,
-          email: email,
-          password: password,
-          created_date_user: new Date(),
-          role_id: role_id,
-          status_user: status_user,
-        };
-
-        const createSuperAdmin = await UserRepository.create(objectParam);
-
-        // Return success response
-        res.json({ message: "success add super admin" });
-      } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Error uploading files" });
-      }
-    }
-  );
-
-  //get detail data user (admin & super admin)
-  app.post(`${uri}/detail-user`, UserController.detailUser);
-
-  //create admin
-  app.post(
-    `${uri}/add-admin`,
-    upload99.array("files", 12),
-    async (req, res) => {
-      try {
-        const username = req.body.username;
-        const display_name = req.body.display_name;
-        const email = req.body.email;
-        const password = req.body.password;
-        const status_user = req.body.status_user;
-        const role_id = "64c62b78d6e8dbf721f303dd";
-
-        //SAVE TO DATABASE
-        let objectParam = {
-          username: username,
-          display_name: display_name,
-          email: email,
-          password: password,
-          created_date_user: new Date(),
-          role_id: role_id,
-          status_user: Boolean(status_user),
-        };
-
-        const createSuperAdmin = await UserRepository.create(objectParam);
-
-        // Return success response
-        res.json({ message: "success add super admin" });
-      } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Error uploading files" });
-      }
-    }
-  );
-
-  //login user
+  // ============== LOGIN ROUTE =============== //
   app.post(`${uri}/login`, UserController.login);
+  // ========================================== //
 
-  //create news
-  app.post(`${uri}/add-news`, upload99.array("files", 12), async (req, res) => {
-    try {
-      const files = req.body.files;
-      const title = req.body.title;
-      const categories = req.body.categories;
-      const created_by = req.body.created_by;
-      const tags = req.body.tags;
-      const field_content = req.body.field_content;
-
-      //SAVE TO DATABASE
-      let objectParam = {
-        files: files,
-        title: title,
-        categories: categories,
-        created_at: new Date(),
-        created_by: ObjectID.createFromHexString(created_by),
-        tags: tags,
-        field_content: field_content,
-      };
-
-      const createNews = await NewsRepository.create(objectParam);
-
-      // Return success response
-      res.json({ message: "success create news" });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Error uploading files" });
-    }
-  });
-
-  //create article
-  app.post(
-    `${uri}/add-article`,
-    upload99.array("files", 12),
-    async (req, res) => {
-      try {
-        //JSON
-        const files = req.body.files;
-        const title = req.body.title;
-        const categories = req.body.categories;
-        const created_by = req.body.created_by;
-        const tags = req.body.tags;
-        const field_content = req.body.field_content;
-
-        //SAVE TO DATABASE
-        let objectParam = {
-          title: title,
-          categories: categories,
-          files: files,
-          created_at: new Date(),
-          created_by: ObjectID.createFromHexString(created_by),
-          tags: tags,
-          field_content: field_content,
-        };
-
-        const createArticle = await ArticleRepository.create(objectParam);
-        // return "Succes Create Content";
-
-        // Return success response
-        res.json({ message: "success create article" });
-      } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Error uploading files" });
-      }
-    }
-  );
-
-  //get all user
+  // ============== ADMIN ROUTE =============== //
   app.post(`${uri}/get-all-user`, UserController.getAllUser);
-
-  //get article detail
-  app.post(`${uri}/detail-article`, ArticleController.detailArticle);
-
-  //get news detail
-  app.post(`${uri}/detail-news`, NewsController.detailNews);
-
-  //get all article
-  app.post(`${uri}/get-all-article`, ArticleController.getAllArticle);
-
-  //get all news
-  app.post(`${uri}/get-all-news`, NewsController.getAllNews);
-
-  //get all image in s3
-  app.get("/images/:key", UserController.findImage);
-
-  //update user(super admin & admin)
-  const upload1001 = multer({
-    storage: multer.memoryStorage(),
-    limits: { fileSize: 1000000000, files: 2 },
-  });
+  app.post(`${uri}/detail-user`, UserController.detailUser);
+  app.post(`${uri}/add-superadmin`, setMulter, UserController.addSuperadmin);
+  app.post(`${uri}/add-admin`, setMulter, UserController.addAdmin);
   app.post(
     `${uri}/update-user/:user_id`,
-    upload1001.array("files", 12),
-    async (req, res) => {
-      const file_image = req.files;
-      let resultUser;
-      try {
-        resultUser = await UserRepository.find({
-          _id: ObjectID.createFromHexString(req.params.user_id),
-        });
-        console.log("resultUser", resultUser);
-        // res.json({ resultUser });
-      } catch (error) {
-        console.error(error);
-        throw new BadRequest("gagal");
-      }
-
-      let name_file_image_user;
-      name_file_image_user = resultUser[0].name_file_image_user;
-
-      let deletedNameImage = resultUser[0].name_file_image_user;
-
-      //upload a new image s3
-      const s3ParamsImageArticle = {
-        Bucket: S3Bucket,
-        Key: file_image[0].originalname,
-        Body: file_image[0].buffer,
-        ContentType: file_image[0].mimetype,
-      };
-      const name_file_new = s3ParamsImageArticle.Key;
-      console.log("name_file_new", name_file_new);
-      const s3UploadFileProfileImageUser = await s3
-        .upload(s3ParamsImageArticle)
-        .promise();
-      const urlImageUser = s3UploadFileProfileImageUser.Location;
-      console.log("urlImageUser", urlImageUser);
-
-      //Delete S3 File
-      const params = {
-        Bucket: S3Bucket,
-        Delete: {
-          Objects: [{ Key: deletedNameImage }],
-        },
-      };
-      console.log("params", params);
-      s3.deleteObjects(params, function (err, data) {
-        if (err) console.log(err, err.stack);
-        else console.log(data);
-      });
-      //update mongodb
-      let objectParam = {
-        url_image_article: urlImageUser,
-        name_file_image_user: name_file_new,
-        email: req.body.email,
-        username: req.body.username,
-        display_name: req.body.display_name,
-        status_user: req.body.status_user,
-        password: req.body.password,
-      };
-      let updateDataUser = await UserRepository.updateOne(
-        {
-          _id: ObjectID.createFromHexString(req.params.user_id),
-        },
-        objectParam
-      );
-      res.json({ message: "Successfully updated" });
-    }
+    setMulter,
+    UserController.updateAdmin
   );
+  app.delete(`${uri}/deleteUser/:user_id`, UserController.deleteAdmin);
+  // ========================================== //
 
-  //update article
-  const upload100 = multer({
-    storage: multer.memoryStorage(),
-    limits: { fileSize: 1000000000, files: 2 },
-  });
+  // =============== NEWS ROUTE =============== //
+  app.post(`${uri}/detail-news`, NewsController.detailNews);
+  app.post(`${uri}/get-all-news`, NewsController.getAllNews);
+  app.post(`${uri}/add-news`, setMulter, NewsController.addNews);
+  app.post(`${uri}/update-news/:news_id`, setMulter, NewsController.updateNews);
+  app.delete(`${uri}/deleteNews/:news_id`, NewsController.deleteNews);
+  // ========================================== //
+
+  // ============= ARTICLE ROUTE ============== //
+  app.post(`${uri}/get-all-article`, ArticleController.getAllArticle);
+  app.post(`${uri}/detail-article`, ArticleController.detailArticle);
+  app.post(`${uri}/add-article`, setMulter, ArticleController.addArticle);
   app.post(
     `${uri}/update-article/:article_id`,
-    upload100.array("files", 12),
-    async (req, res) => {
-      const file_image = req.files;
-      console.log("file_image", file_image);
-      console.log("==");
-      // let idUser = req.body.article_id
-      // console.log("idUser", idUser);
-
-      //find data article
-      let resultArticle;
-      try {
-        resultArticle = await ArticleRepository.find({
-          _id: ObjectID.createFromHexString(req.params.article_id),
-        });
-        console.log("resultArticle", resultArticle);
-        // res.json({ resultArticle });
-      } catch (error) {
-        console.error(error);
-        throw new BadRequest("gagal");
-      }
-
-      let name_file_image_article;
-      name_file_image_article = resultArticle[0].name_file_image_article;
-
-      let deletedNameImage = resultArticle[0].name_file_image_article;
-
-      //upload a new image s3
-      const s3ParamsImageArticle = {
-        Bucket: S3Bucket,
-        Key: file_image[0].originalname,
-        Body: file_image[0].buffer,
-        ContentType: file_image[0].mimetype,
-      };
-      const name_file_new = s3ParamsImageArticle.Key;
-      console.log("name_file_new", name_file_new);
-      const s3UploadFileProfileImageUser = await s3
-        .upload(s3ParamsImageArticle)
-        .promise();
-      const urlImageUser = s3UploadFileProfileImageUser.Location;
-      console.log("urlImageUser", urlImageUser);
-
-      //Delete S3 File
-      const params = {
-        Bucket: S3Bucket,
-        Delete: {
-          Objects: [{ Key: deletedNameImage }],
-        },
-      };
-      console.log("params", params);
-      s3.deleteObjects(params, function (err, data) {
-        if (err) console.log(err, err.stack);
-        else console.log(data);
-      });
-      //update mongodb
-      let objectParam = {
-        url_image_article: urlImageUser,
-        name_file_image_article: name_file_new,
-        title: req.body.title,
-        categories: req.body.categories,
-        tags: req.body.tags,
-      };
-      let updateDataUser = await ArticleRepository.updateOne(
-        {
-          _id: ObjectID.createFromHexString(req.params.article_id),
-        },
-        objectParam
-      );
-      res.json({ message: "Successfully updated" });
-    }
+    setMulter,
+    ArticleController.updateArticle
   );
+  app.delete(
+    `${uri}/deleteArticle/:article_id`,
+    ArticleController.deleteArticle
+  );
+  // ========================================== //
 
-  //update news
-  const updloadnews = multer({
-    storage: multer.memoryStorage(),
-    limits: { fileSize: 1000000000, files: 2 },
-  });
+  // ============= AGENDA ROUTE =============== //
+  app.post(`${uri}/get-all-agenda`, AgendaController.getAllAgenda);
+  app.post(`${uri}/detail-agenda`, AgendaController.detailAgenda);
+  app.post(`${uri}/add-agenda`, setMulter, AgendaController.addAgenda);
   app.post(
-    `${uri}/update-news/:news_id`,
-    updloadnews.array("files", 12),
-    async (req, res) => {
-      const file_image = req.files;
-      console.log("file_image", file_image);
-      console.log("==");
-      // let idUser = req.body.news_id
-      // console.log("idUser", idUser);
-
-      //find data article
-      let resultArticle;
-      try {
-        resultArticle = await NewsRepository.find({
-          _id: ObjectID.createFromHexString(req.params.news_id),
-        });
-        console.log("resultArticle", resultArticle);
-        // res.json({ resultArticle });
-      } catch (error) {
-        console.error(error);
-        throw new BadRequest("gagal");
-      }
-
-      let name_file_image_news;
-      name_file_image_news = resultArticle[0].name_file_image_news;
-
-      let deletedNameImage = resultArticle[0].name_file_image_news;
-
-      //upload a new image s3
-      const s3ParamsImageArticle = {
-        Bucket: S3Bucket,
-        Key: file_image[0].originalname,
-        Body: file_image[0].buffer,
-        ContentType: file_image[0].mimetype,
-      };
-      const name_file_new = s3ParamsImageArticle.Key;
-      console.log("name_file_new", name_file_new);
-      const s3UploadFileProfileImageUser = await s3
-        .upload(s3ParamsImageArticle)
-        .promise();
-      const urlImageUser = s3UploadFileProfileImageUser.Location;
-      console.log("urlImageUser", urlImageUser);
-
-      //Delete S3 File
-      const params = {
-        Bucket: S3Bucket,
-        Delete: {
-          Objects: [{ Key: deletedNameImage }],
-        },
-      };
-      console.log("params", params);
-      s3.deleteObjects(params, function (err, data) {
-        if (err) console.log(err, err.stack);
-        else console.log(data);
-      });
-      //update mongodb
-      let objectParam = {
-        url_image_article: urlImageUser,
-        name_file_image_article: name_file_new,
-        title: req.body.title,
-        categories: req.body.categories,
-        tags: req.body.tags,
-      };
-      let updateDataUser = await NewsRepository.updateOne(
-        {
-          _id: ObjectID.createFromHexString(req.params.news_id),
-        },
-        objectParam
-      );
-      res.json({ message: "Successfully updated" });
-    }
+    `${uri}/update-agenda/:agenda_id`,
+    setMulter,
+    AgendaController.updateAgenda
   );
+  app.delete(`${uri}/delete-agenda/:agenda_id`, AgendaController.deleteAgenda);
+  // ========================================== //
 
-  //delete user (super admin & admin)
-  app.delete(`${uri}/deleteUser/:user_id`, async (req, res) => {
-    try {
-      //Delete data mongodb
-      let deleteDataUser = await UserRepository.deleteOne({
-        _id: ObjectID.createFromHexString(req.params.user_id),
-      });
-
-      res.json({ message: "Deleted successfully" });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Error deleted" });
-    }
-  });
-
-  //delete news
-  app.delete(`${uri}/deleteNews/:news_id`, async (req, res) => {
-    try {
-      //Delete data mongodb
-      let deleteDataNews = await NewsRepository.deleteOne({
-        _id: ObjectID.createFromHexString(req.params.news_id),
-      });
-
-      res.json({ message: "Deleted successfully" });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Error deleted" });
-    }
-  });
-
-  //delete article
-  app.delete(`${uri}/deleteArticle/:article_id`, async (req, res) => {
-    try {
-      //Delete data mongodb
-      let deleteDataArticle = await ArticleRepository.deleteOne({
-        _id: ObjectID.createFromHexString(req.params.article_id),
-      });
-
-      res.json({ message: "Deleted successfully" });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Error deleted" });
-    }
-  });
+  // ============= JOURNAL ROUTE ============== //
+  app.post(`${uri}/get-all-journal`, JournalController.getAllJournal);
+  app.post(`${uri}/detail-journal`, JournalController.detailJournal);
+  app.post(`${uri}/add-journal`, setMulter, JournalController.addJournal);
+  app.post(
+    `${uri}/update-journal/:journal_id`,
+    setMulter,
+    JournalController.updateJournal
+  );
+  app.delete(
+    `${uri}/delete-journal/:journal_id`,
+    JournalController.deleteJournal
+  );
+  // ========================================== //
 };

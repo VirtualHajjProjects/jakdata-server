@@ -1,52 +1,53 @@
 // const UserService = require(`../service/user.service`);
-const ArticleService = require(`../service/article.service`);
+const AgendaService = require(`../service/agenda.service`);
+const AgendaRepository = require(`../repository/agenda.repository`);
 const auth = require("../../../middleware/auth");
-const ArticleRepository = require("../repository/article.repository");
 const ObjectID = require("mongodb").ObjectId;
-class ArticleController {
-  async detailArticle(req, res) {
-    const data = await ArticleService.detailArticle(req.body);
+
+class AgendaController {
+  async detailAgenda(req, res) {
+    const data = await AgendaService.detailAgenda(req.body);
+
     res.json(data);
   }
 
-  async getAllArticle(req, res) {
-    const data = await ArticleService.getAllArticle(req.body);
+  async getAllAgenda(req, res) {
+    const data = await AgendaService.getAllAgenda(req.body);
+
     res.json(data);
   }
 
-  async addArticle(req, res) {
+  async addAgenda(req, res) {
     try {
       const request = req.body;
       let objectParam = {
-        title: request.title,
-        categories: request.categories,
         files: request.files,
+        title: request.title,
         created_at: new Date(),
         created_by: ObjectID.createFromHexString(request.created_by),
         tags: request.tags,
         field_content: request.field_content,
       };
 
-      await ArticleRepository.create(objectParam);
-      res.json({ message: "success create article" });
+      await AgendaRepository.create(objectParam);
+      res.json({ message: "success create news" });
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Error uploading files" });
     }
   }
 
-  async updateArticle(req, res) {
+  async updateAgenda(req, res) {
     try {
       let objectParam = {
         files: req.body.files,
         title: req.body.title,
-        categories: req.body.categories,
         tags: req.body.tags,
         field_content: req.body.field_content,
       };
-      await ArticleRepository.updateOne(
+      await AgendaRepository.updateOne(
         {
-          _id: ObjectID.createFromHexString(req.params.article_id),
+          _id: ObjectID.createFromHexString(req.params.agenda_id),
         },
         objectParam
       );
@@ -57,10 +58,11 @@ class ArticleController {
     }
   }
 
-  async deleteArticle(req, res) {
+  async deleteAgenda(req, res) {
     try {
-      await ArticleRepository.deleteOne({
-        _id: ObjectID.createFromHexString(req.params.article_id),
+      //Delete data mongodb
+      await AgendaRepository.deleteOne({
+        _id: ObjectID.createFromHexString(req.params.agenda_id),
       });
 
       res.json({ message: "Deleted successfully" });
@@ -71,4 +73,4 @@ class ArticleController {
   }
 }
 
-module.exports = new ArticleController();
+module.exports = new AgendaController();

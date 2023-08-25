@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 
 const mySchema = new mongoose.Schema({
   title: String,
-  categories: String,
   files: String,
   created_at: Date,
   created_by: mongoose.Schema.Types.ObjectId,
@@ -11,6 +10,6 @@ const mySchema = new mongoose.Schema({
   field_content: String
 });
 // Define model for MongoDB collection
-const ArticleRepository = mongoose.model('jakdata_coll_article', mySchema);
+const AgendaRepository = mongoose.model('jakdata_coll_agenda', mySchema);
 // export model
-module.exports = ArticleRepository
+module.exports = AgendaRepository
