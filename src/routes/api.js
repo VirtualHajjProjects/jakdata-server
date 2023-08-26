@@ -14,18 +14,27 @@ const express = require("express");
 const uri = "/api/v1";
 const setMulter = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 1000000000, files: 2 },
+  limits: { fileSize: 1000000000, files: 2, fieldSize: 2 * 1024 * 1024 },
 }).array("files", 12);
 
 module.exports = async (app) => {
   app.use(cors());
-  app.get("/cors", (req, res) => {
-    res.set("Access-Control-Allow-Origin", "*");
+  app.get("/", (req, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "X-Requested-With,content-type"
+    );
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.send("Cors Allowed");
   });
 
   // ============== LOGIN ROUTE =============== //
   app.post(`${uri}/login`, UserController.login);
-  // ========================================== //
 
   // ============== ADMIN ROUTE =============== //
   app.post(`${uri}/get-all-user`, UserController.getAllUser);
@@ -38,7 +47,6 @@ module.exports = async (app) => {
     UserController.updateAdmin
   );
   app.delete(`${uri}/deleteUser/:user_id`, UserController.deleteAdmin);
-  // ========================================== //
 
   // =============== NEWS ROUTE =============== //
   app.post(`${uri}/detail-news`, NewsController.detailNews);
@@ -46,7 +54,6 @@ module.exports = async (app) => {
   app.post(`${uri}/add-news`, setMulter, NewsController.addNews);
   app.post(`${uri}/update-news/:news_id`, setMulter, NewsController.updateNews);
   app.delete(`${uri}/deleteNews/:news_id`, NewsController.deleteNews);
-  // ========================================== //
 
   // ============= ARTICLE ROUTE ============== //
   app.post(`${uri}/get-all-article`, ArticleController.getAllArticle);
@@ -61,7 +68,6 @@ module.exports = async (app) => {
     `${uri}/deleteArticle/:article_id`,
     ArticleController.deleteArticle
   );
-  // ========================================== //
 
   // ============= AGENDA ROUTE =============== //
   app.post(`${uri}/get-all-agenda`, AgendaController.getAllAgenda);
@@ -73,7 +79,6 @@ module.exports = async (app) => {
     AgendaController.updateAgenda
   );
   app.delete(`${uri}/delete-agenda/:agenda_id`, AgendaController.deleteAgenda);
-  // ========================================== //
 
   // ============= JOURNAL ROUTE ============== //
   app.post(`${uri}/get-all-journal`, JournalController.getAllJournal);
@@ -88,5 +93,4 @@ module.exports = async (app) => {
     `${uri}/delete-journal/:journal_id`,
     JournalController.deleteJournal
   );
-  // ========================================== //
 };
