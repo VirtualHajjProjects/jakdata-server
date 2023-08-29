@@ -36,9 +36,7 @@ const jwt = require("jsonwebtoken");
 
 class UserService {
   async detailUser(data) {
-    console.log("data", data);
     let email = data.email;
-    console.log("email", email);
 
     //find data user
     const resultUserData = await UserRepository.collection
@@ -58,9 +56,7 @@ class UserService {
   }
 
   async login(data) {
-    console.log("data", data);
     let email = data.email;
-    console.log("email", email);
 
     //find data user
     const resultUserData = await UserRepository.aggregate([
@@ -93,8 +89,7 @@ class UserService {
         },
       },
     ]);
-    console.log(resultUserData);
-
+    
     if (resultUserData.length === 0) {
       return "User Not Found";
     } else {

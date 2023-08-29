@@ -1,9 +1,7 @@
 const ObjectID = require("mongodb").ObjectId;
 const express = require("express");
 const BadRequest = require("express");
-// const UserRepository = require("../repository/user.repository");
-// const ArticleRepository = require("../repository/article.repository");
-const NewsRepository = require("../repository/news.repository");
+const { ServicesRepository } = require("../repository/webProfile.repository");
 var querystring = require("querystring");
 const axios = require("axios");
 const mongoose = require("mongoose");
@@ -12,19 +10,18 @@ mongoose.connect(
   "mongodb+srv://adminjakdata:adminjakdata@jakdatadb.2chyhbr.mongodb.net/jakdata",
   {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   }
 );
 const db = mongoose.connection;
 const jwt = require("jsonwebtoken");
 
-class NewsService {
-  async detailNews(data) {
-    //find data news
-    const resultNewsData = await NewsRepository.collection
+class ServicesService {
+  async detailServices(data) {
+    const resultServicesData = await ServicesRepository.collection
       .find(
         {
-          _id: ObjectID.createFromHexString(data.news_id)
+          _id: ObjectID.createFromHexString(data.services_id),
         },
         { limit: 1 }
       )
@@ -32,44 +29,42 @@ class NewsService {
 
     let response = {
       message: "succes",
-      resultNewsData
+      resultServicesData,
     };
     return response;
   }
 
-  async getAllNews(data) {
-    //find all data news
-    // const resultNewsData = await NewsRepository.collection.find().toArray();
-    const resultNewsData = await NewsRepository.aggregate([
+  async getServices() {
+    const resultServicesData = await ServicesRepository.aggregate([
       {
         $lookup: {
           localField: "created_by",
-          from: "jakdata_coll_news",
+          from: "jakdata_coll_services",
           foreignField: "_id",
-          as: "news"
-        }
+          as: "services",
+        },
       },
       {
         $replaceRoot: {
           newRoot: {
-            $mergeObjects: [{ $arrayElemAt: ["$news", 0] }, "$$ROOT"]
-          }
-        }
+            $mergeObjects: [{ $arrayElemAt: ["$services", 0] }, "$$ROOT"],
+          },
+        },
       },
       {
         $project: {
-          news: 0,
-          __v: 0
-        }
-      }
+          services: 0,
+          __v: 0,
+        },
+      },
     ]);
 
     let response = {
       message: "succes",
-      resultNewsData
+      resultServicesData,
     };
     return response;
   }
 }
 
-module.exports = new NewsService();
+module.exports = new ServicesService();
