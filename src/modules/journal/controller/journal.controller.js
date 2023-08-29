@@ -23,10 +23,11 @@ class JournalController {
       let objectParam = {
         files: request.files,
         title: request.title,
+        category: request.category,
         created_at: new Date(),
         created_by: ObjectID.createFromHexString(request.created_by),
       };
-
+      
       await JournalRepository.create(objectParam);
       res.json({ message: "success create news" });
     } catch (err) {
@@ -40,6 +41,7 @@ class JournalController {
       let objectParam = {
         files: req.body.files,
         title: req.body.title,
+        category: req.body.category,
       };
       await JournalRepository.updateOne(
         {

@@ -87,7 +87,7 @@ module.exports = async (app) => {
   app.delete(`${uri}/delete-agenda/:agenda_id`, AgendaController.deleteAgenda);
 
   // ============= JOURNAL ROUTE ============== //
-  app.post(`${uri}/get-all-journal`, JournalController.deleteJournal);
+  app.post(`${uri}/get-all-journal`, JournalController.getAllJournal);
   app.post(`${uri}/detail-journal`, JournalController.detailJournal);
   app.post(`${uri}/add-journal`, setMulter, JournalController.addJournal);
   app.post(

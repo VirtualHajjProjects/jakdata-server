@@ -7,7 +7,8 @@ const mySchema = new mongoose.Schema({
   created_at: Date,
   created_by: mongoose.Schema.Types.ObjectId,
   tags: Array,
-  field_content: String
+  field_content: String,
+  category: String,
 });
 // Define model for MongoDB collection
 const AgendaRepository = mongoose.model('jakdata_coll_agenda', mySchema);

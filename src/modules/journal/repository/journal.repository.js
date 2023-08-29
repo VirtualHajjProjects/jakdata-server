@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const mySchema = new mongoose.Schema({
   title: String,
   files: String,
+  category: String,
   created_at: Date,
   created_by: mongoose.Schema.Types.ObjectId,
 });

@@ -26,6 +26,7 @@ class AgendaController {
         created_at: new Date(),
         created_by: ObjectID.createFromHexString(request.created_by),
         tags: request.tags,
+        category: request.category,
         field_content: request.field_content,
       };
 
@@ -43,6 +44,7 @@ class AgendaController {
         files: req.body.files,
         title: req.body.title,
         tags: req.body.tags,
+        category: req.body.category,
         field_content: req.body.field_content,
       };
       await AgendaRepository.updateOne(
