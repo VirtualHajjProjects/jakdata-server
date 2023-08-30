@@ -2,7 +2,6 @@ const db = require(`../../../helpers/database`);
 const mongoose = require("mongoose");
 
 const ProfileScheme = new mongoose.Schema({
-  logo: String,
   description: String,
   vision: String,
   mission: String,
@@ -12,6 +11,7 @@ const ProfileScheme = new mongoose.Schema({
   youtube: String,
   twitter: String,
   instagram: String,
+  linkedin: String,
 });
 
 const AdvisoryScheme = new mongoose.Schema({

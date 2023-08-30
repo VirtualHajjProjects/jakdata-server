@@ -14,7 +14,6 @@ class WebProfileController {
     try {
       const request = req.body;
       let objectParam = {
-        logo: request.logo,
         description: request.description,
         vision: request.vision,
         mission: request.mission,
@@ -24,6 +23,7 @@ class WebProfileController {
         youtube: request.youtube,
         instagram: request.instagram,
         twitter: request.twitter,
+        linkedin: request.linkedin,
       };
 
       await WebProfileRepository.create(objectParam);
@@ -37,7 +37,6 @@ class WebProfileController {
   async updateWebProfile(req, res) {
     try {
       let objectParam = {
-        logo: req.body.logo,
         description: req.body.description,
         vision: req.body.vision,
         mission: req.body.mission,
@@ -47,6 +46,7 @@ class WebProfileController {
         youtube: req.body.youtube,
         instagram: req.body.instagram,
         twitter: req.body.twitter,
+        linkedin: req.body.linkedin,
       };
       await WebProfileRepository.updateOne(
         {
