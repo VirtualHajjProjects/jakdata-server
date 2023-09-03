@@ -46,22 +46,22 @@ class NewsService {
           localField: "created_by",
           from: "jakdata_coll_news",
           foreignField: "_id",
-          as: "news"
-        }
+          as: "news",
+        },
       },
       {
         $replaceRoot: {
           newRoot: {
-            $mergeObjects: [{ $arrayElemAt: ["$news", 0] }, "$$ROOT"]
-          }
-        }
+            $mergeObjects: [{ $arrayElemAt: ["$news", 0] }, "$$ROOT"],
+          },
+        },
       },
       {
         $project: {
-          news: 0,
-          __v: 0
-        }
-      }
+          field_content: 0,
+          __v: 0,
+        },
+      },
     ]);
 
     let response = {

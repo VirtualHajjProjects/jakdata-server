@@ -54,7 +54,7 @@ class AgendaService {
       },
       {
         $project: {
-          agenda: 0,
+          field_content: 0,
           __v: 0
         }
       }

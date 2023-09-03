@@ -54,7 +54,7 @@ class JournalService {
       },
       {
         $project: {
-          journal: 0,
+          files: 0,
           __v: 0
         }
       }

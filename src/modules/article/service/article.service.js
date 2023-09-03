@@ -58,7 +58,7 @@ class ArticleService {
       },
       {
         $project: {
-          article: 0,
+          field_content: 0,
           __v: 0
         }
       }
