@@ -5,7 +5,7 @@ const ObjectID = require("mongodb").ObjectId;
 
 class AdvisoryController {
   async getAdvisory(req, res) {
-    const data = await AdvisoryService.getAdvisory(req.body);
+    const data = await AdvisoryService.getAdvisory(req);
     res.json(data);
   }
 

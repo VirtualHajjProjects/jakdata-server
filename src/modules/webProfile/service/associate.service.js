@@ -28,13 +28,15 @@ class AssociateService {
       .toArray();
 
     let response = {
-      message: "succes",
+      message: "Success",
       resultAssociateData,
     };
     return response;
   }
 
-  async getAssociate() {
+  async getAssociate(data) {
+    const current_page = data.query.page || 0;
+    const limit = data.query.limit || 5;
     const resultAssociateData = await AssociateRepository.aggregate([
       {
         $lookup: {
@@ -53,14 +55,26 @@ class AssociateService {
       },
       {
         $project: {
-          associate: 0,
           __v: 0,
+        },
+      },
+      {
+        $facet: {
+          data: [
+            { $skip: (+parseInt(current_page) - 1) * parseInt(limit) },
+            { $limit: parseInt(limit) },
+          ],
+          total: [
+            {
+              $count: "count",
+            },
+          ],
         },
       },
     ]);
 
     let response = {
-      message: "succes",
+      message: "Success",
       resultAssociateData,
     };
     return response;

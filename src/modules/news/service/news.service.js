@@ -12,7 +12,7 @@ mongoose.connect(
   "mongodb+srv://adminjakdata:adminjakdata@jakdatadb.2chyhbr.mongodb.net/jakdata",
   {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   }
 );
 const db = mongoose.connection;
@@ -24,22 +24,22 @@ class NewsService {
     const resultNewsData = await NewsRepository.collection
       .find(
         {
-          _id: ObjectID.createFromHexString(data.news_id)
+          _id: ObjectID.createFromHexString(data.news_id),
         },
         { limit: 1 }
       )
       .toArray();
 
     let response = {
-      message: "succes",
-      resultNewsData
+      message: "Success",
+      resultNewsData,
     };
     return response;
   }
 
   async getAllNews(data) {
-    //find all data news
-    // const resultNewsData = await NewsRepository.collection.find().toArray();
+    const current_page = data.query.page || 0;
+    const limit = data.query.limit || 5;
     const resultNewsData = await NewsRepository.aggregate([
       {
         $lookup: {
@@ -58,15 +58,27 @@ class NewsService {
       },
       {
         $project: {
-          field_content: 0,
           __v: 0,
+        },
+      },
+      {
+        $facet: {
+          data: [
+            { $skip: (+parseInt(current_page) - 1) * parseInt(limit) },
+            { $limit: parseInt(limit) },
+          ],
+          total: [
+            {
+              $count: "count",
+            },
+          ],
         },
       },
     ]);
 
     let response = {
-      message: "succes",
-      resultNewsData
+      message: "Success",
+      resultNewsData,
     };
     return response;
   }

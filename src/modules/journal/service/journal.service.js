@@ -11,7 +11,7 @@ mongoose.connect(
   "mongodb+srv://adminjakdata:adminjakdata@jakdatadb.2chyhbr.mongodb.net/jakdata",
   {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   }
 );
 const db = mongoose.connection;
@@ -22,47 +22,62 @@ class JournalService {
     const resultJournalData = await JournalRepository.collection
       .find(
         {
-          _id: ObjectID.createFromHexString(data.journal_id)
+          _id: ObjectID.createFromHexString(data.journal_id),
         },
         { limit: 1 }
       )
       .toArray();
 
     let response = {
-      message: "succes",
-      resultJournalData
+      message: "Success",
+      resultJournalData,
     };
     return response;
   }
 
   async getAllJournal(data) {
+    const current_page = data.query.page || 0;
+    const limit = data.query.limit || 5;
     const resultJournalData = await JournalRepository.aggregate([
       {
         $lookup: {
           localField: "created_by",
           from: "jakdata_coll_journal",
           foreignField: "_id",
-          as: "journal"
-        }
+          as: "journal",
+        },
       },
       {
         $replaceRoot: {
           newRoot: {
-            $mergeObjects: [{ $arrayElemAt: ["$journal", 0] }, "$$ROOT"]
-          }
-        }
+            $mergeObjects: [{ $arrayElemAt: ["$journal", 0] }, "$$ROOT"],
+          },
+        },
       },
       {
         $project: {
           files: 0,
-          __v: 0
-        }
-      }
+          __v: 0,
+        },
+      },
+      {
+        $facet: {
+          data: [
+            { $skip: (+parseInt(current_page) - 1) * parseInt(limit) },
+            { $limit: parseInt(limit) },
+          ],
+          total: [
+            {
+              $count: "count",
+            },
+          ],
+        },
+      },
     ]);
 
     let response = {
-      message: "succes",
-      resultJournalData
+      message: "Success",
+      resultJournalData,
     };
     return response;
   }

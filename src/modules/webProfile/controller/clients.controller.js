@@ -5,7 +5,7 @@ const ObjectID = require("mongodb").ObjectId;
 
 class ClientsController {
   async getClients(req, res) {
-    const data = await ClientsService.getClients(req.body);
+    const data = await ClientsService.getClients(req);
     res.json(data);
   }
 

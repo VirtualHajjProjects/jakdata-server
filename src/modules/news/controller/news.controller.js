@@ -10,7 +10,7 @@ class NewsController {
   }
 
   async getAllNews(req, res) {
-    const data = await NewsService.getAllNews(req.body);
+    const data = await NewsService.getAllNews(req);
     res.json(data);
   }
 
@@ -26,10 +26,10 @@ class NewsController {
         tags: request.tags,
         field_content: request.field_content,
       };
-
       await NewsRepository.create(objectParam);
       res.json({ message: "success create news" });
     } catch (err) {
+      console.error('ERROR');
       console.error(err);
       res.status(500).json({ message: "Error uploading files" });
     }

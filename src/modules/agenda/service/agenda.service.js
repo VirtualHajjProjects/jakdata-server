@@ -11,7 +11,7 @@ mongoose.connect(
   "mongodb+srv://adminjakdata:adminjakdata@jakdatadb.2chyhbr.mongodb.net/jakdata",
   {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   }
 );
 const db = mongoose.connection;
@@ -22,47 +22,62 @@ class AgendaService {
     const resultAgendaData = await AgendaRepository.collection
       .find(
         {
-          _id: ObjectID.createFromHexString(data.agenda_id)
+          _id: ObjectID.createFromHexString(data.agenda_id),
         },
         { limit: 1 }
       )
       .toArray();
 
     let response = {
-      message: "succes",
-      resultAgendaData
+      message: "Success",
+      resultAgendaData,
     };
     return response;
   }
 
   async getAllAgenda(data) {
+    const current_page = data.query.page || 0;
+    const limit = data.query.limit || 5;
     const resultAgendaData = await AgendaRepository.aggregate([
       {
         $lookup: {
           localField: "created_by",
           from: "jakdata_coll_agenda",
           foreignField: "_id",
-          as: "agenda"
-        }
+          as: "agenda",
+        },
       },
       {
         $replaceRoot: {
           newRoot: {
-            $mergeObjects: [{ $arrayElemAt: ["$agenda", 0] }, "$$ROOT"]
-          }
-        }
+            $mergeObjects: [{ $arrayElemAt: ["$agenda", 0] }, "$$ROOT"],
+          },
+        },
       },
       {
         $project: {
           field_content: 0,
-          __v: 0
-        }
-      }
+          __v: 0,
+        },
+      },
+      {
+        $facet: {
+          data: [
+            { $skip: (+parseInt(current_page) - 1) * parseInt(limit) },
+            { $limit: parseInt(limit) },
+          ],
+          total: [
+            {
+              $count: "count",
+            },
+          ],
+        },
+      },
     ]);
 
     let response = {
-      message: "succes",
-      resultAgendaData
+      message: "Success",
+      resultAgendaData,
     };
     return response;
   }

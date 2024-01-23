@@ -5,7 +5,7 @@ const ObjectID = require("mongodb").ObjectId;
 
 class AssociateController {
   async getAssociate(req, res) {
-    const data = await AssociateService.getAssociate(req.body);
+    const data = await AssociateService.getAssociate(req);
     res.json(data);
   }
 

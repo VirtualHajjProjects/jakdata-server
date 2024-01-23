@@ -18,11 +18,11 @@ setTimeout(function() {
         useUnifiedTopology: true
       }
       );
-  }, 60000);
+  }, 100000);
 
 const db = mongoose.connection;
 // console.log(db)
 db.on('error', (error)=> console.error(error));
-db.once('open', () => console.log('Database Connecteds'));
+db.once('open', () => console.log('Database Connected'));
 
 module.exports = db;

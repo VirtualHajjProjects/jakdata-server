@@ -28,13 +28,15 @@ class ExecutiveService {
       .toArray();
 
     let response = {
-      message: "succes",
+      message: "Success",
       resultExecutiveData,
     };
     return response;
   }
 
-  async getExecutive() {
+  async getExecutive(data) {
+    const current_page = data.query.page || 0;
+    const limit = data.query.limit || 5;
     const resultExecutiveData = await ExecutiveRepository.aggregate([
       {
         $lookup: {
@@ -53,14 +55,26 @@ class ExecutiveService {
       },
       {
         $project: {
-          executive: 0,
           __v: 0,
+        },
+      },
+      {
+        $facet: {
+          data: [
+            { $skip: (+parseInt(current_page) - 1) * parseInt(limit) },
+            { $limit: parseInt(limit) },
+          ],
+          total: [
+            {
+              $count: "count",
+            },
+          ],
         },
       },
     ]);
 
     let response = {
-      message: "succes",
+      message: "Success",
       resultExecutiveData,
     };
     return response;

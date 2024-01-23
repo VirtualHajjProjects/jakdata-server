@@ -5,7 +5,7 @@ const ObjectID = require("mongodb").ObjectId;
 
 class ExecutiveController {
   async getExecutive(req, res) {
-    const data = await ExecutiveService.getExecutive(req.body);
+    const data = await ExecutiveService.getExecutive(req);
     res.json(data);
   }
 

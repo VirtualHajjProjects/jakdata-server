@@ -21,7 +21,7 @@ class WebProfileService {
     const resultWebProfileData = await WebProfileRepository.find({});
 
     let response = {
-      message: "succes",
+      message: "Success",
       resultWebProfileData,
     };
     return response;

@@ -5,7 +5,7 @@ const ObjectID = require("mongodb").ObjectId;
 
 class ServicesController {
   async getServices(req, res) {
-    const data = await ServicesService.getServices(req.body);
+    const data = await ServicesService.getServices(req);
     res.json(data);
   }
 

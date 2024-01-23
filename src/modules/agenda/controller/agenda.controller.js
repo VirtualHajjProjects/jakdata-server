@@ -12,7 +12,7 @@ class AgendaController {
   }
 
   async getAllAgenda(req, res) {
-    const data = await AgendaService.getAllAgenda(req.body);
+    const data = await AgendaService.getAllAgenda(req);
 
     res.json(data);
   }

@@ -28,13 +28,15 @@ class ServicesService {
       .toArray();
 
     let response = {
-      message: "succes",
+      message: "Success",
       resultServicesData,
     };
     return response;
   }
 
-  async getServices() {
+  async getServices(data) {
+    const current_page = data.query.page || 0;
+    const limit = data.query.limit || 5;
     const resultServicesData = await ServicesRepository.aggregate([
       {
         $lookup: {
@@ -53,14 +55,26 @@ class ServicesService {
       },
       {
         $project: {
-          services: 0,
           __v: 0,
+        },
+      },
+      {
+        $facet: {
+          data: [
+            { $skip: (+parseInt(current_page) - 1) * parseInt(limit) },
+            { $limit: parseInt(limit) },
+          ],
+          total: [
+            {
+              $count: "count",
+            },
+          ],
         },
       },
     ]);
 
     let response = {
-      message: "succes",
+      message: "Success",
       resultServicesData,
     };
     return response;

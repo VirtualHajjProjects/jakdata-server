@@ -29,7 +29,7 @@ setTimeout(function () {
       useUnifiedTopology: true,
     }
   );
-}, 60000);
+}, 100000);
 
 const db = mongoose.connection;
 const jwt = require("jsonwebtoken");
@@ -49,7 +49,7 @@ class UserService {
       .toArray();
 
     let response = {
-      message: "succes",
+      message: "Success",
       resultUserData,
     };
     return response;
@@ -89,7 +89,7 @@ class UserService {
         },
       },
     ]);
-    
+
     if (resultUserData.length === 0) {
       return "User Not Found";
     } else {
@@ -103,8 +103,8 @@ class UserService {
 
   async getAllUser(data) {
     try {
-      // Find all data users and convert the cursor to an array
-      // const resultUserData = await UserRepository.collection.find().toArray();
+      const current_page = data.query.page || 0;
+      const limit = data.query.limit || 5;
       const resultUserData = await UserRepository.aggregate([
         {
           $lookup: {
@@ -126,6 +126,19 @@ class UserService {
             role: 0,
             __v: 0,
             password: 0,
+          },
+        },
+        {
+          $facet: {
+            data: [
+              { $skip: (+parseInt(current_page) - 1) * parseInt(limit) },
+              { $limit: parseInt(limit) },
+            ],
+            total: [
+              {
+                $count: "count",
+              },
+            ],
           },
         },
       ]);

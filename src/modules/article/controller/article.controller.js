@@ -10,7 +10,7 @@ class ArticleController {
   }
 
   async getAllArticle(req, res) {
-    const data = await ArticleService.getAllArticle(req.body);
+    const data = await ArticleService.getAllArticle(req);
     res.json(data);
   }
 

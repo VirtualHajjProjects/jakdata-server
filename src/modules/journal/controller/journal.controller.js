@@ -12,7 +12,7 @@ class JournalController {
   }
 
   async getAllJournal(req, res) {
-    const data = await JournalService.getAllJournal(req.body);
+    const data = await JournalService.getAllJournal(req);
 
     res.json(data);
   }

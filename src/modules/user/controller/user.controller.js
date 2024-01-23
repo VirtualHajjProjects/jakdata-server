@@ -16,7 +16,7 @@ class UserController {
   }
 
   async getAllUser(req, res) {
-    const data = await UserService.getAllUser(req.body);
+    const data = await UserService.getAllUser(req);
 
     res.json(data);
   }
