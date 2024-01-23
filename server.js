@@ -24,7 +24,13 @@ const serverless = require("serverless-http");
 const createServer = async () => {
   app.use(bodyParser.json());
   require(`./src/routes/api`)(app);
-  app.use(cors());
+  app.use(
+    cors({
+      origin: "*",
+      credentials: true,
+      optionsSuccessStatus: 200,
+    })
+  );
 };
 app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
