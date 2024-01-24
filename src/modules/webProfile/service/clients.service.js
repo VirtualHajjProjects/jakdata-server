@@ -61,6 +61,7 @@ class ClientsService {
       {
         $facet: {
           data: [
+            { $sort: { created_at: -1 } },
             { $skip: (+parseInt(current_page) - 1) * parseInt(limit) },
             { $limit: parseInt(limit) },
           ],
